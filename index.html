@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="data:,">
+  <title>HYPNOTIZED</title>
+  <meta property="og:title" content="HYPNOTIZED">
+  <meta property="og:description" content="You decoded the signal. Now enter the spiral.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Creepster&family=Fira+Code:wght@400;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --purple: #b026ff;
+      --cyan: #00fff7;
+      --magenta: #ff2d95;
+      --acid-green: #39ff14;
+      --bg-dark: #050508;
+    }
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--bg-dark);
+      color: #e0e0e0;
+      font-family: 'Share Tech Mono', monospace;
+      min-height: 100vh;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* vignette */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(ellipse at center, transparent 50%, #050508 100%);
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    /* scanlines */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(0deg,
+        transparent, transparent 2px,
+        rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px);
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    .spiral {
+      position: fixed;
+      top: 50%; left: 50%;
+      width: 120vmax; height: 120vmax;
+      transform: translate(-50%, -50%);
+      background: conic-gradient(from 0deg,
+        var(--purple) 0deg, var(--cyan) 60deg, var(--magenta) 120deg,
+        var(--purple) 180deg, var(--cyan) 240deg, var(--magenta) 300deg,
+        var(--purple) 360deg);
+      border-radius: 50%;
+      filter: blur(60px);
+      opacity: 0.3;
+      animation: spin 20s linear infinite;
+      z-index: 0;
+    }
+    @keyframes spin {
+      from { transform: translate(-50%, -50%) rotate(0deg); }
+      to   { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+
+    .rings {
+      position: fixed;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 1;
+      pointer-events: none;
+    }
+    .ring {
+      position: absolute;
+      top: 50%; left: 50%;
+      border-radius: 50%;
+      border: 1px solid;
+      animation: pulse 3s ease-in-out infinite alternate;
+    }
+    .ring:nth-child(1)  { width:80px;  height:80px;  margin:-40px;  border-color:var(--purple); animation-delay:0s; }
+    .ring:nth-child(2)  { width:130px; height:130px; margin:-65px;  border-color:var(--cyan);   animation-delay:.3s; }
+    .ring:nth-child(3)  { width:180px; height:180px; margin:-90px;  border-color:var(--purple); animation-delay:.6s; }
+    .ring:nth-child(4)  { width:230px; height:230px; margin:-115px; border-color:var(--cyan);   animation-delay:.9s; }
+    .ring:nth-child(5)  { width:280px; height:280px; margin:-140px; border-color:var(--purple); animation-delay:1.2s; }
+    .ring:nth-child(6)  { width:330px; height:330px; margin:-165px; border-color:var(--cyan);   animation-delay:1.5s; }
+    .ring:nth-child(7)  { width:380px; height:380px; margin:-190px; border-color:var(--purple); animation-delay:1.8s; }
+    .ring:nth-child(8)  { width:430px; height:430px; margin:-215px; border-color:var(--cyan);   animation-delay:2.1s; }
+    @keyframes pulse {
+      from { transform: scale(1);    opacity: 1; }
+      to   { transform: scale(1.08); opacity: 0.5; }
+    }
+
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 24px;
+      background: #0a0a0a;
+      border-bottom: 1px solid rgba(176,38,255,0.2);
+      font-size: clamp(10px, 1.5vw, 13px);
+      z-index: 100;
+    }
+    .nav-left, .nav-right { color: rgba(255,255,255,0.4); }
+    .nav-center { color: var(--purple); }
+
+    .corner {
+      position: fixed;
+      font-size: 11px;
+      opacity: 0.3;
+      z-index: 10;
+    }
+    .corner-tl { top: 48px; left: 24px; color: var(--cyan); }
+    .corner-br { bottom: 24px; right: 24px; color: var(--cyan); }
+
+    .content {
+      position: relative;
+      z-index: 3;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 32px 24px;
+      max-width: 650px;
+      gap: 24px;
+    }
+
+    .signal {
+      font-size: clamp(11px, 2vw, 14px);
+      color: var(--cyan);
+      letter-spacing: 6px;
+      text-transform: uppercase;
+    }
+
+    .title {
+      font-family: 'Creepster', system-ui;
+      font-size: clamp(2.5rem, 8vw, 5rem);
+      color: var(--purple);
+      text-shadow: 0 0 20px #b026ffcc, 0 0 60px #b026ff66, 0 0 100px #b026ff33;
+      line-height: 1.1;
+      animation: fadeUp 1s ease forwards, glitch 8s ease-in-out 4s infinite;
+      opacity: 0;
+    }
+
+    .subtitle {
+      font-size: clamp(14px, 2.5vw, 18px);
+      color: var(--cyan);
+      letter-spacing: 3px;
+    }
+
+    .message {
+      font-family: 'Fira Code', monospace;
+      font-size: clamp(12px, 1.8vw, 15px);
+      line-height: 1.7;
+      color: rgba(224,224,224,0.75);
+      max-width: 520px;
+    }
+
+    .enter-link {
+      display: inline-block;
+      font-size: clamp(13px, 2vw, 16px);
+      color: var(--purple);
+      text-decoration: none;
+      border: 1px solid var(--purple);
+      padding: 12px 40px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      transition: background .3s, color .3s, box-shadow .3s;
+    }
+    .enter-link:hover {
+      background: var(--purple);
+      color: var(--bg-dark);
+      box-shadow: 0 0 25px #b026ff99, 0 0 60px #b026ff44;
+    }
+    .enter-link:focus-visible {
+      background: var(--purple);
+      color: var(--bg-dark);
+      outline: 2px solid var(--cyan);
+      outline-offset: 3px;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(15px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .fade-in { opacity: 0; animation: fadeUp 1s ease forwards; }
+    .d1 { animation-delay: .5s; }
+    .d2 { animation-delay: 1s; }
+    .d3 { animation-delay: 1.5s; }
+    .d4 { animation-delay: 2.5s; }
+    .d5 { animation-delay: 3.5s; }
+
+    @keyframes glitch {
+      0%, 96%, 100% { transform: translate(0); }
+      97%  { transform: translate(-3px, 1px); }
+      98%  { transform: translate(3px, -1px); }
+      99%  { transform: translate(-1px, -2px); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .spiral, .ring { animation: none; }
+      .fade-in, .title { animation: none; opacity: 1; transform: none; }
+    }
+  </style>
+</head>
+<body>
+  <!-- The spiral pulls you deeper. Nothing is as it seems. -->
+
+  <div class="spiral" aria-hidden="true"></div>
+
+  <div class="rings" aria-hidden="true">
+    <div class="ring"></div><div class="ring"></div><div class="ring"></div><div class="ring"></div>
+    <div class="ring"></div><div class="ring"></div><div class="ring"></div><div class="ring"></div>
+  </div>
+
+  <nav class="nav">
+    <span class="nav-left">FREQ::7.83Hz</span>
+    <span class="nav-center">THE SPIRAL</span>
+    <span class="nav-right">SIGNAL FOUND</span>
+  </nav>
+
+  <span class="corner corner-tl">SITE::7</span>
+  <span class="corner corner-br">FREQ::04.06.26</span>
+
+  <main class="content">
+    <p class="signal fade-in d1">// signal intercepted</p>
+    <h1 class="title fade-in d2">HYPNOTIZED</h1>
+    <p class="subtitle fade-in d3">Project Spiral</p>
+    <p class="message fade-in d4">
+      You decoded the signal. You found the frequency.<br>
+      But the signal was just the beginning.
+      What follows will require you to look harder,
+      think differently, and question everything
+      you see on the screen.
+    </p>
+    <a href="stage1.html" class="enter-link fade-in d5">Enter the Spiral</a>
+  </main>
+
+  <script>
+  // hey, you opened devtools. good instinct.
+  // nothing useful here though. the clues are in the pages themselves.
+  // ...or are they?
+  (function() {
+    var s = [72,89,80,78,79,84,73,90,69,68];
+    var msg = s.map(function(c){ return String.fromCharCode(c); }).join('');
+    console.log('%c' + msg, 'color:#b026ff;font-size:20px;font-family:monospace;text-shadow:0 0 10px #b026ff');
+    console.log('%c// the spiral goes deeper than you think', 'color:#00fff7;font-size:11px;font-family:monospace');
+  })();
+  </script>
+</body>
+</html>

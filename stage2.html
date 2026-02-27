@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="data:,">
+  <title>System Log Recovery — Site 7 Workstation</title>
+  <meta property="og:title" content="System Log Recovery — Site 7 Workstation">
+  <meta property="og:description" content="48 log entries recovered from forensic disk image. One process doesn't belong.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <!-- If you're reading source for this one, the clue is on the page itself. Not here. -->
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --purple: #b026ff;
+      --cyan: #00fff7;
+      --magenta: #ff2d95;
+      --acid-green: #39ff14;
+    }
+
+    body {
+      background: #0c0c0c;
+      color: rgba(51, 255, 51, 0.7);
+      font-family: 'Fira Code', monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* CRT */
+    body::after {
+      content: '';
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: repeating-linear-gradient(
+        0deg,
+        rgba(0,0,0,0.15) 0px, rgba(0,0,0,0.15) 1px,
+        transparent 1px, transparent 3px
+      );
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.6) 100%);
+      pointer-events: none;
+      z-index: 9998;
+    }
+
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 24px;
+      background: #0a0a0a;
+      border-bottom: 1px solid #222;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 14px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .nav-left { color: #999; }
+    .nav-center { color: var(--purple); letter-spacing: 2px; }
+    .nav-right { color: #999; }
+
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 30px 20px 60px;
+    }
+
+    .ascii-header {
+      text-align: center;
+      color: #33ff33;
+      font-size: 12px;
+      line-height: 1.4;
+      margin-bottom: 24px;
+      white-space: pre;
+      overflow-x: auto;
+    }
+
+    .terminal {
+      background: #0a0a0a;
+      border: 1px solid #1a1a1a;
+      border-radius: 4px;
+      padding: 16px 20px;
+      overflow-x: auto;
+      white-space: nowrap;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+
+    .log-line {
+      opacity: 0;
+      animation: fadeIn 0.15s ease forwards;
+      padding: 1px 0;
+      white-space: pre;
+    }
+    @keyframes fadeIn { to { opacity: 1; } }
+
+    .tag-kernel { color: #4a7a4a; }
+    .tag-netd { color: #4a6a8a; }
+    .tag-authd { color: #8a8a4a; }
+    .tag-crond { color: #4a7a4a; }
+    .tag-sshd { color: #8a6a3a; }
+    .tag-fsck { color: #6a6a6a; }
+    .tag-spiral {
+      color: var(--magenta);
+      font-weight: 700;
+      text-shadow: 0 0 6px rgba(255, 45, 149, 0.5);
+    }
+    .timestamp { color: rgba(51, 255, 51, 0.4); }
+    .msg { color: rgba(51, 255, 51, 0.65); }
+    .msg-spiral { color: var(--magenta); opacity: 0.9; }
+    .msg-critical { color: #ff4444; font-weight: 700; }
+    .msg-failed { color: #cc6644; }
+    .msg-warning { color: #aaaa44; }
+
+    .cursor-line { margin-top: 4px; }
+    .cursor {
+      display: inline-block;
+      width: 8px;
+      height: 1.2em;
+      background: #33ff33;
+      animation: blink 1s step-end infinite;
+      vertical-align: text-bottom;
+    }
+    @keyframes blink { 50% { opacity: 0; } }
+
+    /* status footer, not a hint */
+    .status-bar {
+      margin-top: 20px;
+      padding: 10px 16px;
+      background: #0a0a0a;
+      border: 1px solid #1a1a1a;
+      border-radius: 4px;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 12px;
+      color: #444;
+      text-align: center;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .log-line { opacity: 1; animation: none; }
+      .cursor { animation: none; opacity: 1; }
+    }
+
+    @media (max-width: 700px) {
+      .ascii-header { font-size: 9px; }
+      .terminal { font-size: 11px; padding: 12px 10px; }
+      .nav { font-size: 11px; padding: 8px 12px; }
+    }
+
+    .terminal::-webkit-scrollbar { width: 6px; height: 6px; }
+    .terminal::-webkit-scrollbar-track { background: #0a0a0a; }
+    .terminal::-webkit-scrollbar-thumb { background: #222; border-radius: 3px; }
+    .terminal::-webkit-scrollbar-thumb:hover { background: #333; }
+  </style>
+</head>
+<body>
+
+  <nav class="nav">
+    <span class="nav-left">SITE7::DR.LUMEN-WS3</span>
+    <span class="nav-center">SYSTEM LOG</span>
+    <span class="nav-right">OFFLINE</span>
+  </nav>
+
+  <div class="container">
+
+    <div class="ascii-header">&#9556;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9559;
+&#9553;  RECOVERED SYSTEM LOG &#8212; Site 7 Workstation [DR.LUMEN-WS3]      &#9553;
+&#9553;  Image Date: 2026.02.28 | Sector: THETA-7 | Status: OFFLINE    &#9553;
+&#9562;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9565;</div>
+
+    <div class="terminal">
+      <div class="log-line" style="animation-delay:0s"><span class="timestamp">[2026.02.28 03:00:01]</span> <span class="tag-kernel">[KERNEL]</span> <span class="msg">system boot initiated &#8212; kernel 6.8.0-rc3-spiral</span></div>
+      <div class="log-line" style="animation-delay:.05s"><span class="timestamp">[2026.02.28 03:00:01]</span> <span class="tag-kernel">[KERNEL]</span> <span class="msg">memory check: 65536MB OK &#8212; ECC enabled</span></div>
+      <div class="log-line" style="animation-delay:.1s"><span class="timestamp">[2026.02.28 03:00:02]</span> <span class="tag-kernel">[KERNEL]</span> <span class="msg">loading modules: spiral_core, theta_bridge, eeg_capture</span></div>
+      <div class="log-line" style="animation-delay:.15s"><span class="timestamp">[2026.02.28 03:00:02]</span> <span class="tag-fsck">[FSCK]</span> <span class="msg">/dev/sda1: clean, 284731/1048576 files, 2891044/4194304 blocks</span></div>
+      <div class="log-line" style="animation-delay:.2s"><span class="timestamp">[2026.02.28 03:00:02]</span> <span class="tag-kernel">[KERNEL]</span> <span class="msg">filesystem mounted: /dev/sda1 on / type ext4 (rw,noatime)</span></div>
+      <div class="log-line" style="animation-delay:.25s"><span class="timestamp">[2026.02.28 03:00:03]</span> <span class="tag-netd">[NETD]</span> <span class="msg">interface eth0 up &#8212; 10.7.41.2/24 &#8212; MTU 9000</span></div>
+      <div class="log-line" style="animation-delay:.3s"><span class="timestamp">[2026.02.28 03:00:03]</span> <span class="tag-netd">[NETD]</span> <span class="msg">DNS resolver: 10.7.41.1, 198.51.100.1</span></div>
+      <div class="log-line" style="animation-delay:.35s"><span class="timestamp">[2026.02.28 03:00:04]</span> <span class="tag-netd">[NETD]</span> <span class="msg">multicast group 239.7.83.0 joined on eth0</span></div>
+      <div class="log-line" style="animation-delay:.4s"><span class="timestamp">[2026.02.28 03:00:04]</span> <span class="tag-authd">[AUTHD]</span> <span class="msg">PAM module loaded &#8212; enforcing mandatory access control</span></div>
+      <div class="log-line" style="animation-delay:.45s"><span class="timestamp">[2026.02.28 03:00:05]</span> <span class="tag-kernel">[KERNEL]</span> <span class="msg">USB device detected: NeuroLink EEG-7 on /dev/ttyUSB0</span></div>
+      <div class="log-line" style="animation-delay:.5s"><span class="timestamp">[2026.02.28 03:00:05]</span> <span class="tag-kernel">[KERNEL]</span> <span class="msg">driver loaded: eeg_capture v3.1.7 &#8212; 32 channels active</span></div>
+      <div class="log-line" style="animation-delay:.55s"><span class="timestamp">[2026.02.28 03:00:06]</span> <span class="tag-spiral">[SPIRAL_DAEMON]</span> <span class="msg-spiral">synchronization pulse initiated on theta band</span></div>
+      <div class="log-line" style="animation-delay:.6s"><span class="timestamp">[2026.02.28 03:00:06]</span> <span class="tag-crond">[CROND]</span> <span class="msg">cron service started &#8212; 14 jobs scheduled</span></div>
+      <div class="log-line" style="animation-delay:.65s"><span class="timestamp">[2026.02.28 03:00:07]</span> <span class="tag-crond">[CROND]</span> <span class="msg">next job: /etc/cron.d/theta_maintenance at 04:00</span></div>
+      <div class="log-line" style="animation-delay:.7s"><span class="timestamp">[2026.02.28 03:00:07]</span> <span class="tag-sshd">[SSHD]</span> <span class="msg">listening on 0.0.0.0:22 &#8212; protocol 2.0</span></div>
+      <div class="log-line" style="animation-delay:.75s"><span class="timestamp">[2026.02.28 03:00:08]</span> <span class="tag-sshd">[SSHD]</span> <span class="msg">connection from 10.7.41.5:49152 &#8212; user: dr.lumen</span></div>
+      <div class="log-line" style="animation-delay:.8s"><span class="timestamp">[2026.02.28 03:00:08]</span> <span class="tag-authd">[AUTHD]</span> <span class="msg">user dr.lumen authenticated via pubkey RSA-4096</span></div>
+      <div class="log-line" style="animation-delay:.85s"><span class="timestamp">[2026.02.28 03:00:09]</span> <span class="tag-kernel">[KERNEL]</span> <span class="msg">DMA transfer initiated: EEG buffer &#8594; /dev/shm/theta_stream</span></div>
+      <div class="log-line" style="animation-delay:.9s"><span class="timestamp">[2026.02.28 03:00:10]</span> <span class="tag-netd">[NETD]</span> <span class="msg">TLS 1.3 handshake complete with spiral-ctrl.site7.local:8443</span></div>
+      <div class="log-line" style="animation-delay:.95s"><span class="timestamp">[2026.02.28 03:00:10]</span> <span class="tag-spiral">[SPIRAL_DAEMON]</span> <span class="msg-spiral">theta-wave lock acquired at 7.83Hz</span></div>
+      <div class="log-line" style="animation-delay:1s"><span class="timestamp">[2026.02.28 03:00:11]</span> <span class="tag-sshd">[SSHD]</span> <span class="msg">connection from 203.0.113.42:55801 &#8212; user: admin</span></div>
+      <div class="log-line" style="animation-delay:1.05s"><span class="timestamp">[2026.02.28 03:00:11]</span> <span class="tag-authd">[AUTHD]</span> <span class="msg-failed">FAILED authentication for admin from 203.0.113.42 &#8212; attempt 1/3</span></div>
+      <div class="log-line" style="animation-delay:1.1s"><span class="timestamp">[2026.02.28 03:00:12]</span> <span class="tag-sshd">[SSHD]</span> <span class="msg">connection from 203.0.113.42:55802 &#8212; user: admin</span></div>
+      <div class="log-line" style="animation-delay:1.15s"><span class="timestamp">[2026.02.28 03:00:12]</span> <span class="tag-authd">[AUTHD]</span> <span class="msg-failed">FAILED authentication for admin from 203.0.113.42 &#8212; attempt 2/3</span></div>
+      <div class="log-line" style="animation-delay:1.2s"><span class="timestamp">[2026.02.28 03:00:13]</span> <span class="tag-kernel">[KERNEL]</span> <span class="msg-warning">thermal warning: CPU0 at 72&#176;C &#8212; threshold 85&#176;C</span></div>
+      <div class="log-line" style="animation-delay:1.25s"><span class="timestamp">[2026.02.28 03:00:13]</span> <span class="tag-netd">[NETD]</span> <span class="msg-warning">bandwidth spike on eth0: 847 Mbps (threshold: 500 Mbps)</span></div>
+      <div class="log-line" style="animation-delay:1.3s"><span class="timestamp">[2026.02.28 03:00:14]</span> <span class="tag-sshd">[SSHD]</span> <span class="msg">connection from 203.0.113.42:55803 &#8212; user: root</span></div>
+      <div class="log-line" style="animation-delay:1.35s"><span class="timestamp">[2026.02.28 03:00:14]</span> <span class="tag-authd">[AUTHD]</span> <span class="msg-failed">FAILED authentication for root from 203.0.113.42 &#8212; attempt 3/3 &#8212; IP BANNED</span></div>
+      <div class="log-line" style="animation-delay:1.4s"><span class="timestamp">[2026.02.28 03:00:15]</span> <span class="tag-spiral">[SPIRAL_DAEMON]</span> <span class="msg-spiral">amplitude modulation cycling at 0.3Hz delta</span></div>
+      <div class="log-line" style="animation-delay:1.45s"><span class="timestamp">[2026.02.28 03:00:16]</span> <span class="tag-crond">[CROND]</span> <span class="msg">executing: /opt/spiral/bin/theta_calibrate --freq 7.83</span></div>
+      <div class="log-line" style="animation-delay:1.5s"><span class="timestamp">[2026.02.28 03:00:16]</span> <span class="tag-kernel">[KERNEL]</span> <span class="msg">audit: 47 syscalls logged in last 60s &#8212; no anomalies</span></div>
+      <div class="log-line" style="animation-delay:1.55s"><span class="timestamp">[2026.02.28 03:00:17]</span> <span class="tag-netd">[NETD]</span> <span class="msg">ARP request: who has 10.7.41.7? Tell 10.7.41.2</span></div>
+      <div class="log-line" style="animation-delay:1.6s"><span class="timestamp">[2026.02.28 03:00:17]</span> <span class="tag-netd">[NETD]</span> <span class="msg">ARP reply: 10.7.41.7 is at 02:42:ac:11:00:07</span></div>
+      <div class="log-line" style="animation-delay:1.65s"><span class="timestamp">[2026.02.28 03:00:18]</span> <span class="tag-authd">[AUTHD]</span> <span class="msg">session dr.lumen: sudo /opt/spiral/bin/entrain --phase 3</span></div>
+      <div class="log-line" style="animation-delay:1.7s"><span class="timestamp">[2026.02.28 03:00:19]</span> <span class="tag-spiral">[SPIRAL_DAEMON]</span> <span class="msg-spiral">generating entrainment pattern for subjects 1-12</span></div>
+      <div class="log-line" style="animation-delay:1.75s"><span class="timestamp">[2026.02.28 03:00:20]</span> <span class="tag-netd">[NETD]</span> <span class="msg">outbound connection to 198.51.100.7:443 &#8212; TLS 1.3</span></div>
+      <div class="log-line" style="animation-delay:1.8s"><span class="timestamp">[2026.02.28 03:00:20]</span> <span class="tag-kernel">[KERNEL]</span> <span class="msg">memory pressure: 78% utilized &#8212; 14336MB available</span></div>
+      <div class="log-line" style="animation-delay:1.85s"><span class="timestamp">[2026.02.28 03:00:21]</span> <span class="tag-netd">[NETD]</span> <span class="msg">multicast beacon sent on 239.7.83.0 &#8212; subjects: 12</span></div>
+      <div class="log-line" style="animation-delay:1.9s"><span class="timestamp">[2026.02.28 03:00:22]</span> <span class="tag-crond">[CROND]</span> <span class="msg">job completed: theta_calibrate &#8212; exit code 0</span></div>
+      <div class="log-line" style="animation-delay:1.95s"><span class="timestamp">[2026.02.28 03:00:23]</span> <span class="tag-sshd">[SSHD]</span> <span class="msg">connection from 10.7.41.9:52100 &#8212; user: dr.vasquez</span></div>
+      <div class="log-line" style="animation-delay:2s"><span class="timestamp">[2026.02.28 03:00:23]</span> <span class="tag-authd">[AUTHD]</span> <span class="msg">user dr.vasquez authenticated via pubkey ED25519</span></div>
+      <div class="log-line" style="animation-delay:2.05s"><span class="timestamp">[2026.02.28 03:00:24]</span> <span class="tag-kernel">[KERNEL]</span> <span class="msg">USB device activity: /dev/ttyUSB0 &#8212; 2.4MB/s sustained</span></div>
+      <div class="log-line" style="animation-delay:2.1s"><span class="timestamp">[2026.02.28 03:00:25]</span> <span class="tag-spiral">[SPIRAL_DAEMON]</span> <span class="msg-spiral">executing phase 3 cognitive bridge sequence</span></div>
+      <div class="log-line" style="animation-delay:2.15s"><span class="timestamp">[2026.02.28 03:00:26]</span> <span class="tag-netd">[NETD]</span> <span class="msg">DNS query: spiral-ctrl.site7.local &#8594; 10.7.41.100</span></div>
+      <div class="log-line" style="animation-delay:2.2s"><span class="timestamp">[2026.02.28 03:00:26]</span> <span class="tag-kernel">[KERNEL]</span> <span class="msg">thermal nominal: CPU0 at 68&#176;C &#8212; fan speed 4200 RPM</span></div>
+      <div class="log-line" style="animation-delay:2.25s"><span class="timestamp">[2026.02.28 03:00:27]</span> <span class="tag-authd">[AUTHD]</span> <span class="msg">session dr.vasquez: read access granted to /vault/subjects/</span></div>
+      <div class="log-line" style="animation-delay:2.3s"><span class="timestamp">[2026.02.28 03:00:28]</span> <span class="tag-fsck">[FSCK]</span> <span class="msg">/dev/sdb1: recovering journal &#8212; 3 orphaned inodes</span></div>
+      <div class="log-line" style="animation-delay:2.35s"><span class="timestamp">[2026.02.28 03:00:29]</span> <span class="tag-spiral">[SPIRAL_DAEMON]</span> <span class="msg-spiral">3 subjects showing anomalous theta response</span></div>
+      <div class="log-line" style="animation-delay:2.4s"><span class="timestamp">[2026.02.28 03:00:30]</span> <span class="tag-netd">[NETD]</span> <span class="msg">bandwidth nominal: eth0 at 312 Mbps</span></div>
+      <div class="log-line" style="animation-delay:2.45s"><span class="timestamp">[2026.02.28 03:00:30]</span> <span class="tag-kernel">[KERNEL]</span> <span class="msg-warning">unexpected signal: SIGTERM received by PID 1847 (theta_bridge)</span></div>
+      <div class="log-line" style="animation-delay:2.5s"><span class="timestamp">[2026.02.28 03:00:31]</span> <span class="tag-kernel">[KERNEL]</span> <span class="msg-warning">process theta_bridge (PID 1847) terminated &#8212; core dump: /var/crash/theta_bridge.1847.core</span></div>
+      <div class="log-line" style="animation-delay:2.55s"><span class="timestamp">[2026.02.28 03:00:31]</span> <span class="tag-spiral">[SPIRAL_DAEMON]</span> <span class="msg-warning">WARNING: theta_bridge process lost &#8212; entrainment integrity compromised</span></div>
+      <div class="log-line" style="animation-delay:2.6s"><span class="timestamp">[2026.02.28 03:00:32]</span> <span class="tag-kernel">[KERNEL]</span> <span class="msg-critical">CRITICAL: unexpected shutdown sequence initiated &#8212; no authorized user command found</span></div>
+      <div class="log-line" style="animation-delay:2.65s"><span class="timestamp">[2026.02.28 03:00:32]</span> <span class="tag-kernel">[KERNEL]</span> <span class="msg-critical">PANIC: fatal exception in spiral_core module &#8212; halting</span></div>
+      <div class="cursor-line"><span class="cursor"></span></div>
+    </div>
+
+    <div class="status-bar">
+      FORENSIC IMAGE RECOVERY COMPLETE &mdash; 54 ENTRIES &mdash; DISK SERIAL: WD-WXJ1A84N7032
+    </div>
+
+  </div>
+
+</body>
+</html>

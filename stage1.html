@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="data:,">
+  <title>Recovered Document — SC4-HYP-00731</title>
+  <meta property="og:title" content="Recovered Document — Dr. Lumen's Journal">
+  <meta property="og:description" content="Classification: RESTRICTED. Recovery date: 2026.03.01. Handle with appropriate clearance.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Creepster&family=Fira+Code:wght@400;700&family=Share+Tech+Mono&family=Special+Elite&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --purple: #b026ff;
+      --cyan: #00fff7;
+      --magenta: #ff2d95;
+      --bg-dark: #050508;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--bg-dark);
+      color: #c8c8c8;
+      font-family: 'Fira Code', monospace;
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    /* scanlines */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px);
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 24px;
+      background: #0a0a0a;
+      border-bottom: 1px solid #222;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.85rem;
+      letter-spacing: 1px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .nav-left, .nav-right { color: #888; }
+    .nav-center { color: var(--purple); font-weight: 700; }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 40px 20px 60px;
+    }
+
+    .doc-header {
+      border: 1px solid #333;
+      padding: 24px;
+      margin-bottom: 40px;
+      text-align: center;
+      background: rgba(10, 10, 10, 0.6);
+    }
+    .doc-classification {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.75rem;
+      letter-spacing: 3px;
+      color: var(--magenta);
+      text-transform: uppercase;
+      border: 1px solid var(--magenta);
+      display: inline-block;
+      padding: 4px 16px;
+      margin-bottom: 20px;
+    }
+    .doc-title {
+      font-family: 'Special Elite', cursive;
+      font-size: clamp(1.5rem, 4vw, 2.2rem);
+      color: #e0e0e0;
+      margin-bottom: 12px;
+    }
+    .doc-meta {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.7rem;
+      color: #555;
+      letter-spacing: 1px;
+    }
+
+    .entry {
+      border-left: 3px solid var(--purple);
+      padding: 16px 20px;
+      margin-bottom: 28px;
+    }
+    .entry-date {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.8rem;
+      color: var(--cyan);
+      margin-bottom: 8px;
+      letter-spacing: 1px;
+    }
+    .entry-body {
+      font-family: 'Special Elite', cursive;
+      font-size: 1.05rem;
+      line-height: 1.75;
+      color: #b8b8b8;
+    }
+
+    .redacted {
+      background: var(--bg-dark);
+      color: var(--bg-dark);
+      padding: 0 4px;
+      cursor: default;
+      user-select: all; /* selecting reveals the text */
+    }
+
+    .footer {
+      text-align: center;
+      padding: 32px 20px;
+      margin-top: 48px;
+      border-top: 1px solid #1a1a1a;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.7rem;
+      color: #333;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    @media (max-width: 600px) {
+      .nav { font-size: 0.7rem; padding: 10px 12px; }
+      .container { padding: 24px 12px 40px; }
+      .entry { padding: 12px 14px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Lab Note: Theta oscillation baseline confirmed at 7.83Hz — matches Schumann resonance fundamental -->
+<!-- Equipment: NeuroLink EEG-7, 32-channel, 10-20 montage. Electrodes Fp1, Fp2, C3, C4, P3, P4, O1, O2 -->
+
+<nav class="nav">
+  <span class="nav-left">DOC::SC4-HYP-00731</span>
+  <span class="nav-center">RESTRICTED</span>
+  <span class="nav-right">CLASSIFIED</span>
+</nav>
+
+<!-- [SIGNAL]: s -->
+<!-- Calibration run #41 complete — amplifier gain set to 20,000x -->
+
+<div class="container">
+
+  <header class="doc-header">
+    <div class="doc-classification">Recovered Document</div>
+    <h1 class="doc-title">The Journal of Dr. Elias Lumen</h1>
+    <p class="doc-meta">Document ID: SC4-HYP-00731 &nbsp;|&nbsp; Recovery Date: 2026.03.01 &nbsp;|&nbsp; Classification: RESTRICTED</p>
+  </header>
+
+  <!-- Dr. Vasquez keeps leaving her goddamn coffee on the oscilloscope. Third time this month. -->
+  <!-- [SIGNAL]: t -->
+
+  <article class="entry">
+    <div class="entry-date">October 28, 2025</div>
+    <p class="entry-body">First real results today. Subject 4 hit theta lock at 7.83Hz within 90 seconds — that's the Schumann resonance fundamental, which I keep telling Vasquez is not a coincidence. The EEG showed sustained coherence across Fp1 and Fp2 for almost eleven minutes. I've never seen frontal lobe synchronization like this outside of deep meditation studies. The grant committee wanted "novel approaches to neural entrainment" and I think we just found one. Vasquez thinks I'm reading too much into it. She might be right. She usually is about the small stuff, never about the big stuff.</p>
+  </article>
+
+  <!-- [FREQ]: 7.83 -->
+  <!-- Procurement: Need to reorder Ag/AgCl electrode paste, running low. Form submitted 2025.10.30 -->
+
+  <article class="entry">
+    <div class="entry-date">November 19, 2025</div>
+    <p class="entry-body">Something weird happened in Session 23. I was running the standard protocol — 7.83Hz binaural, 40ms pulse width, nothing exotic — and three subjects simultaneously reported visual spirals during the theta lock phase. They're in separate rooms. Soundproofed. No shared stimuli. I pulled the EEG data and there's a secondary waveform riding on top of the theta carrier at about 0.3Hz. It's not in our signal generator output. It's not 60Hz mains hum. I have no idea where it's coming from. Checked the equipment twice. Vasquez checked it a third time. It's clean. The waveform is being generated by the subjects' brains, in sync, across three isolated rooms. I didn't sleep last night.</p>
+  </article>
+
+  <!-- [SIGNAL]: a -->
+  <!-- Reminder: Submit IRB amendment for Phase 3 protocol changes by Dec 15 -->
+  <!-- [DATA]: 0x7f3a9c2e — memory dump fragment, likely corrupted -->
+
+  <article class="entry">
+    <div class="entry-date">December 11, 2025</div>
+    <p class="entry-body">Ran the numbers on the 0.3Hz anomaly. It's present in 9 out of 12 subjects now. Always during theta lock. Always the same frequency. I started calling it the "spiral harmonic" in my notes, which Vasquez says is unscientific and she's right but I don't care. The thing that's keeping me up: the amplitude modulation pattern on the spiral harmonic is not random. I ran an autocorrelation and it has structure. Repeating structure. Like it's carrying information. I know how that sounds. I know exactly how that sounds. I'm writing it down anyway.</p>
+  </article>
+
+  <!-- TODO: request board meeting re: Phase 3 continuation — Vasquez will back me up (maybe) -->
+  <!-- [SIGNAL]: g -->
+  <!-- SECURITY ADVISORY: Badge readers on sublevel 2 offline since 12/08. Use manual sign-in sheet. -->
+
+  <article class="entry">
+    <div class="entry-date">January 8, 2026</div>
+    <p class="entry-body">Subject 7 spoke during entrainment today. That's not supposed to happen — theta lock suppresses voluntary motor function, including speech. The EEG showed full theta coherence, no signs of arousal or wakefulness. But she opened her eyes, looked directly at the observation camera, and said: "You keep studying the waves, Doctor. Have you tried reading the shore?" Then she closed her eyes and the session continued normally. She has no memory of it. I've replayed the tape six times. Vasquez wants to flag it as an anomaly and move on. I can't move on. What shore?</p>
+  </article>
+
+  <!-- Annual fire safety inspection: Site 7, Building C, scheduled 2026.01.20 -->
+  <!-- [SIGNAL]: e -->
+  <!-- [FREQ]: 40 — gamma band, unrelated to theta experiments -->
+
+  <article class="entry">
+    <div class="entry-date">January 22, 2026</div>
+    <p class="entry-body">Christ. The board killed Phase 3. "Insufficient reproducibility" they said, which is bureaucrat for "this makes us uncomfortable." Vasquez got reassigned to some auditory processing study on the second floor. I have until the end of February to wrap up documentation and return the lab equipment. I spent eight months on this. Eight months, and the data is sitting right there showing something we've never seen before, and they want me to write a closeout report and move on.</p>
+  </article>
+
+  <!-- [COMMS]: internal memo — Dr. Vasquez requests transfer to Bldg A, approved 01/25 -->
+
+  <article class="entry">
+    <div class="entry-date">February 3, 2026</div>
+    <p class="entry-body">I've been going through the session recordings at night. Playing them back at different speeds. The spiral harmonic — when you slow it way down and convert the amplitude envelope to a spectrogram — there are patterns. Not random noise patterns. Structured patterns. I mapped the first seven sessions and the patterns repeat with variations, like a language with grammar. I know I should stop. I know the project is over. But I took copies of everything before they wiped the drives. Vasquez doesn't know. Nobody knows.</p>
+  </article>
+
+  <!-- [SIGNAL]: 2 -->
+  <!-- Site 7 parking garage will be closed for repaving Feb 20-25. Use visitor lot B. -->
+
+  <article class="entry">
+    <div class="entry-date">February 14, 2026</div>
+    <p class="entry-body">Last entry. I'm writing this from home. They revoked my badge yesterday — "routine deactivation" after project closure, supposedly. Fine. Whoever finds these notes: I embedded what I could in the documents themselves. Not in the text. Not in what you can read on the surface. <span class="redacted">The signal is in the structure — look at what the system is telling you, not what the author wrote.</span> I don't know if anyone will ever look hard enough to find it. Probably not. But Subject 7 was right about one thing — I was looking in the wrong place for a long time. Don't make my mistake. Stop reading. Start examining.</p>
+  </article>
+
+  <!-- [AUDIT]: Document recovery complete. All entries intact. No signs of tampering. -->
+  <!-- NOTICE: If you are reading this document without proper clearance (LEVEL 3+), report to security immediately. -->
+
+  <div style="display:none">
+    CLASSIFIED — INTERNAL MEMO
+    FROM: Site 7 Administration
+    TO: Dr. E. Lumen
+    RE: Project SPIRAL Termination
+
+    Per Board Directive 2026-0142, Project SPIRAL is terminated effective immediately.
+    All research materials, data sets, and equipment must be returned to Central Records
+    by COB February 28, 2026. Any unauthorized retention of classified materials will
+    result in immediate termination of employment and potential criminal referral.
+
+    Your keycard access to sublevel labs has been revoked. Please use the main entrance
+    and sign in with security for any remaining access needs.
+
+    — R. Chen, Director of Operations
+  </div>
+
+</div>
+
+<footer class="footer">
+  PROJECT SPIRAL // THE SPIRAL GOES DEEPER
+</footer>
+
+<!-- Integrity hash: sha256:a3f2c8... (truncated) — this document has not been modified since recovery -->
+</body>
+</html>

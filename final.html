@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="data:,">
+<title>// TRANSMISSION DECRYPTED</title>
+<meta property="og:title" content="// TRANSMISSION DECRYPTED">
+<meta property="og:description" content="You broke the trance. Welcome to the other side.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Creepster&family=Fira+Code:wght@400;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --purple: #b026ff;
+    --cyan: #00fff7;
+    --magenta: #ff2d95;
+    --acid-green: #39ff14;
+    --bg-dark: #050508;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg-dark);
+    color: #e0e0e0;
+    font-family: 'Share Tech Mono', monospace;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(0deg,
+      rgba(0,0,0,0.15) 0px, rgba(0,0,0,0.15) 1px,
+      transparent 1px, transparent 3px);
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  .nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 24px;
+    background: #0a0a0a;
+    border-bottom: 1px solid #1a1a1a;
+    font-size: 12px;
+    letter-spacing: 2px;
+    z-index: 100;
+  }
+  .nav-left, .nav-right { color: #555; }
+  .nav-center { color: var(--purple); }
+
+  .glitch-overlay {
+    position: fixed;
+    inset: 0;
+    background: var(--bg-dark);
+    z-index: 50;
+    pointer-events: none;
+    animation: glitchFlicker 2.5s ease forwards;
+  }
+  .glitch-overlay::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(0deg,
+      transparent 0px, transparent 2px,
+      rgba(176,38,255,0.03) 2px, rgba(176,38,255,0.03) 4px);
+  }
+
+  @keyframes glitchFlicker {
+    0%   { opacity: 1; }
+    10%  { opacity: 0; }
+    20%  { opacity: 1; }
+    30%  { opacity: 0; }
+    50%  { opacity: 0.7; }
+    60%  { opacity: 0; }
+    80%  { opacity: 0.3; }
+    90%  { opacity: 0; }
+    100% { opacity: 0; }
+  }
+
+  .bg-spiral {
+    position: fixed;
+    top: 50%; left: 50%;
+    width: 150vmax; height: 150vmax;
+    transform: translate(-50%, -50%);
+    background: conic-gradient(from 0deg, #b026ff, #00fff7, #ff2d95, #39ff14, #b026ff);
+    filter: blur(80px);
+    animation: spin 30s linear infinite, fadeInBg 3s ease forwards;
+    opacity: 0;
+    z-index: 0;
+  }
+  @keyframes spin { to { transform: translate(-50%, -50%) rotate(360deg); } }
+  @keyframes fadeInBg { to { opacity: 0.15; } }
+
+  #particles {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .content {
+    position: relative;
+    z-index: 5;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 80px 24px 48px;
+    text-align: center;
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(15px);
+    animation: revealUp 1s ease forwards;
+  }
+  @keyframes revealUp { to { opacity: 1; transform: translateY(0); } }
+
+  .tx-label {
+    color: var(--acid-green);
+    font-size: 10px;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    margin-bottom: 24px;
+    animation-delay: 2.5s;
+  }
+
+  .main-title {
+    font-family: 'Creepster', cursive;
+    color: var(--cyan);
+    font-size: clamp(2.5rem, 8vw, 4.5rem);
+    text-shadow: 0 0 20px #00fff766, 0 0 60px #00fff744, 0 0 100px #00fff722;
+    margin-bottom: 16px;
+    animation-delay: 3s;
+  }
+
+  .subtitle {
+    font-family: 'Creepster', cursive;
+    color: var(--purple);
+    font-size: clamp(1.2rem, 3vw, 2rem);
+    margin-bottom: 40px;
+    animation-delay: 3.5s;
+  }
+
+  .message {
+    max-width: 600px;
+    line-height: 1.8;
+    font-size: 15px;
+    margin-bottom: 32px;
+    animation-delay: 4.5s;
+  }
+  .message em { color: var(--cyan); font-style: normal; }
+
+  .divider {
+    width: 60px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--purple), transparent);
+    margin: 32px auto;
+    animation-delay: 5.5s;
+  }
+
+  .badge {
+    border: 1px solid var(--acid-green);
+    color: var(--acid-green);
+    padding: 12px 32px;
+    letter-spacing: 4px;
+    font-size: 14px;
+    margin-bottom: 24px;
+    animation-delay: 6s;
+  }
+
+  .proof {
+    font-family: 'Fira Code', monospace;
+    font-size: 10px;
+    color: #555;
+    letter-spacing: 1px;
+    margin-bottom: 24px;
+    animation-delay: 6.2s;
+  }
+
+  .credit {
+    opacity: 0.4;
+    font-size: 12px;
+    margin-bottom: 24px;
+    animation-delay: 6.5s;
+  }
+
+  .return-link { animation-delay: 7s; }
+  .return-link a {
+    color: #e0e0e0;
+    text-decoration: none;
+    font-size: 13px;
+    opacity: 0.2;
+    transition: opacity .3s, color .3s;
+  }
+  .return-link a:hover { opacity: 0.8; color: var(--purple); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .glitch-overlay { animation: none; opacity: 0; }
+    .bg-spiral { animation: none; opacity: 0.15; }
+    .reveal { animation: none; opacity: 1; transform: none; }
+    #particles { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!--
+    You made it. Most don't.
+
+       _.---._
+      /  o o  \
+     | \_____/ |
+      \       /
+       '-----'
+
+    hex proof: 53 50 49 52 41 4c 3a 3a 41 57 41 4b 45
+
+    If you're at the con, show this page to popsh3llz.
+    If you're not at the con... you should be.
+
+    St. Paul, MN — June 4-5, 2026
+-->
+
+<nav class="nav">
+  <span class="nav-left">SIGNAL::DECODED</span>
+  <span class="nav-center">TRANSMISSION COMPLETE</span>
+  <span class="nav-right">AWAKE</span>
+</nav>
+
+<div class="glitch-overlay"></div>
+<div class="bg-spiral"></div>
+<canvas id="particles" aria-hidden="true"></canvas>
+
+<main class="content">
+  <div class="tx-label reveal">// TRANSMISSION DECRYPTED</div>
+
+  <h1 class="main-title reveal">YOU BROKE THE TRANCE</h1>
+
+  <h2 class="subtitle reveal">Project Spiral : Hypnotized</h2>
+
+  <p class="message reveal">
+    You decoded the hex.<br>
+    You read what wasn't meant to be seen.<br>
+    You found the signal hiding in the noise.<br>
+    You decoded the transmission.<br>
+    You cracked the cipher.<br>
+    <br>
+    <em>Most people would have stopped at the first page.</em><br>
+    <br>
+    Welcome to the other side, Agent.
+  </p>
+
+  <div class="divider reveal"></div>
+
+  <div class="badge reveal">&#10022; SPIRAL :: COMPLETE &#10022;</div>
+
+  <div class="proof reveal">PROOF: 53504952414c3a3a4157414b45</div>
+
+  <p class="credit reveal">Designed by <span style="color:#b026ff">popsh3llz</span></p>
+
+  <div class="return-link reveal"><a href="index.html">[ return to the spiral ]</a></div>
+</main>
+
+<script>
+(function() {
+  var canvas = document.getElementById('particles');
+  var ctx = canvas.getContext('2d');
+  var colors = ['#b026ff','#00fff7','#ff2d95','#39ff14'];
+  var particles = [];
+  var N = 60;
+
+  function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+
+  function makeParticle(y) {
+    return {
+      x: Math.random() * canvas.width,
+      y: y !== undefined ? y : Math.random() * canvas.height,
+      vx: (Math.random() - 0.5) * 0.5,
+      vy: -(Math.random() * 0.8 + 0.2),
+      r: Math.random() * 2 + 1,
+      color: colors[(Math.random() * colors.length) | 0],
+      a: Math.random() * 0.4 + 0.3
+    };
+  }
+
+  function init() {
+    resize();
+    for (var i = 0; i < N; i++) particles.push(makeParticle());
+    loop();
+  }
+
+  function loop() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    for (var i = 0; i < particles.length; i++) {
+      var p = particles[i];
+      p.x += p.vx;
+      p.y += p.vy;
+      if (p.y < -10) { particles[i] = makeParticle(canvas.height + 10); p = particles[i]; }
+      if (p.x < -10) p.x = canvas.width + 10;
+      if (p.x > canvas.width + 10) p.x = -10;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = p.color;
+      ctx.globalAlpha = p.a;
+      ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+    requestAnimationFrame(loop);
+  }
+
+  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    window.addEventListener('resize', resize);
+    setTimeout(init, 2500);
+  }
+})();
+</script>
+</body>
+</html>

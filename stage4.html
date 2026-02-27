@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="data:,">
+  <title>Intercepted Transmission &#8212; SIGINT</title>
+  <meta property="og:title" content="Classified &#8212; Intercepted Radio Transmission">
+  <meta property="og:description" content="Encrypted broadcast on anomalous frequency. Shift value unknown. Decryption pending.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Creepster&family=Fira+Code:wght@400;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --purple: #b026ff;
+      --cyan: #00fff7;
+      --magenta: #ff2d95;
+      --acid-green: #39ff14;
+      --bg-dark: #050508;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--bg-dark);
+      color: #c0c0c0;
+      font-family: 'Share Tech Mono', monospace;
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    body::after {
+      content: '';
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: repeating-linear-gradient(0deg,
+        rgba(0,0,0,0.15) 0px, rgba(0,0,0,0.15) 1px,
+        transparent 1px, transparent 3px);
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 24px;
+      background: #0a0a0a;
+      border-bottom: 1px solid #222;
+      font-size: 14px;
+      letter-spacing: 1px;
+    }
+    .nav-left, .nav-right { color: #555; }
+    .nav-center { color: var(--purple); font-weight: 700; }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 32px 20px 60px;
+    }
+
+    .classified-banner {
+      border: 3px double var(--magenta);
+      padding: 24px;
+      text-align: center;
+      margin-bottom: 32px;
+    }
+    .classified-label {
+      font-size: 14px;
+      color: var(--magenta);
+      letter-spacing: 6px;
+      margin-bottom: 10px;
+    }
+    .classified-title {
+      font-family: 'Creepster', cursive;
+      font-size: clamp(1.4rem, 4vw, 2.2rem);
+      color: #e0e0e0;
+      letter-spacing: 2px;
+      margin-bottom: 8px;
+    }
+    .classified-subtitle {
+      font-size: 11px;
+      color: #666;
+      letter-spacing: 2px;
+    }
+
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: #1a1a1a;
+      border: 1px solid #222;
+      margin-bottom: 32px;
+    }
+    .meta-item { padding: 12px 16px; background: #0c0c0f; }
+    .meta-label {
+      font-size: 10px;
+      color: #555;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    .meta-value {
+      font-family: 'Fira Code', monospace;
+      font-size: 13px;
+      color: #aaa;
+    }
+    .meta-value.status { color: var(--magenta); font-weight: 700; }
+
+    .panel {
+      border: 1px solid #222;
+      margin-bottom: 32px;
+      background: #0a0a0e;
+    }
+    .panel-header {
+      padding: 8px 16px;
+      border-bottom: 1px solid #222;
+      font-size: 12px;
+      letter-spacing: 2px;
+      color: #555;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .panel-header .dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+    .panel-body { padding: 20px; }
+
+    .cipher-text {
+      font-family: 'Fira Code', monospace;
+      font-size: 14px;
+      color: var(--purple);
+      text-shadow: 0 0 10px #b026ff44;
+      line-height: 1.8;
+      word-wrap: break-word;
+    }
+
+    .tuner-controls {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .tuner-label {
+      font-size: 13px;
+      color: var(--acid-green);
+      letter-spacing: 1px;
+      white-space: nowrap;
+    }
+    .shift-input {
+      width: 60px;
+      padding: 6px 8px;
+      background: #0c0c0f;
+      border: 1px solid var(--acid-green);
+      color: var(--acid-green);
+      font-family: 'Fira Code', monospace;
+      font-size: 14px;
+      text-align: center;
+    }
+    .shift-input:focus { box-shadow: 0 0 8px #39ff1433; outline: none; }
+
+    .shift-slider {
+      flex: 1;
+      min-width: 120px;
+      accent-color: var(--acid-green);
+      cursor: pointer;
+    }
+
+    .output-label {
+      font-size: 11px;
+      color: #555;
+      letter-spacing: 2px;
+      margin-bottom: 8px;
+    }
+    .output-box {
+      border: 1px solid #333;
+      background: #060609;
+      padding: 16px;
+      font-family: 'Fira Code', monospace;
+      font-size: 14px;
+      color: var(--acid-green);
+      line-height: 1.8;
+      word-wrap: break-word;
+      min-height: 80px;
+      transition: border-color 0.3s, box-shadow 0.3s, color 0.3s;
+    }
+    .output-box.solved {
+      color: var(--cyan);
+      text-shadow: 0 0 12px #00fff744;
+      border-color: var(--cyan);
+      box-shadow: 0 0 10px #00fff71a;
+    }
+
+    .herring-section { opacity: 0.4; }
+    .herring-item {
+      padding: 8px 0;
+      border-bottom: 1px solid #151515;
+      font-family: 'Fira Code', monospace;
+      font-size: 12px;
+      color: #555;
+      line-height: 1.6;
+    }
+    .herring-item:last-child { border-bottom: none; }
+    .herring-freq { color: #444; margin-right: 8px; }
+
+    @media (max-width: 600px) {
+      .meta-grid { grid-template-columns: repeat(2, 1fr); }
+      .tuner-controls { flex-direction: column; align-items: stretch; }
+      .shift-input { width: 100%; }
+      .nav { font-size: 11px; padding: 8px 12px; }
+    }
+    @media (max-width: 400px) {
+      .meta-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="nav">
+  <span class="nav-left">SIGINT::147.855MHz</span>
+  <span class="nav-center">CLASSIFIED</span>
+  <span class="nav-right">AWAITING DECRYPT</span>
+</nav>
+
+<div class="container">
+
+  <div class="classified-banner">
+    <div class="classified-label">&#9670; CLASSIFIED &#9670;</div>
+    <div class="classified-title">INTERCEPTED RADIO TRANSMISSION</div>
+    <div class="classified-subtitle">ORIGIN: UNKNOWN &nbsp;|&nbsp; FREQ: 147.855 MHz &nbsp;|&nbsp; PRIORITY: IMMEDIATE</div>
+  </div>
+
+  <div class="meta-grid">
+    <div class="meta-item">
+      <div class="meta-label">Intercept Time</div>
+      <div class="meta-value">2026.02.28 03:14:00 UTC</div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-label">Frequency</div>
+      <div class="meta-value">147.855 MHz (anomalous)</div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-label">Signal Type</div>
+      <div class="meta-value">Narrowband FM</div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-label">Encryption</div>
+      <div class="meta-value">Substitution &#8212; variant unknown</div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-label">Shift Value</div>
+      <div class="meta-value">UNDETERMINED</div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-label">Status</div>
+      <div class="meta-value status">AWAITING DECRYPTION</div>
+    </div>
+  </div>
+
+  <!-- ENCRYPTED TEXT -->
+  <div class="panel">
+    <div class="panel-header">
+      <span class="dot" style="background:var(--purple)"></span>
+      ENCRYPTED TRANSMISSION
+    </div>
+    <div class="panel-body">
+      <div class="cipher-text" id="cipherDisplay">Pbatenghyngvbaf Ntrag. Gur fcveny unf erirnyrq vgf frperg. Lbhe svany qrfgvangvba njnvgf ng /svany.ugzy - Gur ulcabgvmrq pnaabg ybbx njnl.</div>
+    </div>
+  </div>
+
+  <!-- SHIFT REGISTER -->
+  <div class="panel">
+    <div class="panel-header">
+      <span class="dot" style="background:var(--acid-green)"></span>
+      SHIFT REGISTER
+    </div>
+    <div class="panel-body">
+      <div class="tuner-controls">
+        <label for="shiftVal" class="tuner-label">OFFSET:</label>
+        <input type="number" id="shiftVal" class="shift-input" min="0" max="25" value="0" aria-label="Substitution shift value">
+        <input type="range" id="shiftRange" class="shift-slider" min="0" max="25" value="0" aria-label="Shift value slider">
+      </div>
+      <div class="output-label">DECRYPTED OUTPUT:</div>
+      <div class="output-box" id="decryptedOut"></div>
+    </div>
+  </div>
+
+  <!-- OTHER FREQUENCIES -->
+  <div class="panel herring-section">
+    <div class="panel-header">ADDITIONAL INTERCEPTED BROADCASTS</div>
+    <div class="panel-body">
+      <div class="herring-item"><span class="herring-freq">[89.3 MHz]</span>Guvf vf whfg n qrpbl. Xrrc ybbxvat.</div>
+      <div class="herring-item"><span class="herring-freq">[103.7 MHz]</span>Arire tbaan tvir lbh hc. Arire tbaan yrg lbh qbja.</div>
+      <div class="herring-item"><span class="herring-freq">[147.1 MHz]</span>Vs lbh qrpbqrq nyy bs gurfr lbh unir gbb zhpu serr gvzr.</div>
+      <div class="herring-item"><span class="herring-freq">[162.4 MHz]</span>Qrpbqvat guvf jba'g uryc lbh. Gur nafjre vf va gur znva genafzvffvba.</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+var cipherSrc = 'Pbatenghyngvbaf Ntrag. Gur fcveny unf erirnyrq vgf frperg. Lbhe svany qrfgvangvba njnvgf ng /svany.ugzy - Gur ulcabgvmrq pnaabg ybbx njnl.';
+
+var inp = document.getElementById('shiftVal');
+var slider = document.getElementById('shiftRange');
+var out = document.getElementById('decryptedOut');
+
+function shift(text, n) {
+  var result = '';
+  for (var i = 0; i < text.length; i++) {
+    var c = text.charCodeAt(i);
+    if (c >= 65 && c <= 90) {
+      result += String.fromCharCode((c - 65 + n) % 26 + 65);
+    } else if (c >= 97 && c <= 122) {
+      result += String.fromCharCode((c - 97 + n) % 26 + 97);
+    } else {
+      result += text[i];
+    }
+  }
+  return result;
+}
+
+function update() {
+  var v = parseInt(inp.value, 10) || 0;
+  if (v < 0) v = 0;
+  if (v > 25) v = 25;
+  inp.value = v;
+  slider.value = v;
+
+  var plain = shift(cipherSrc, v);
+  out.textContent = plain;
+
+  // visual feedback when solved
+  if (v === 13) {
+    out.className = 'output-box solved';
+  } else {
+    out.className = 'output-box';
+  }
+}
+
+inp.addEventListener('input', update);
+slider.addEventListener('input', function() {
+  inp.value = this.value;
+  update();
+});
+
+update();
+</script>
+
+</body>
+</html>

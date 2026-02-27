@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="data:,">
+  <title>Intercepted Traffic &#8212; Capture #4471</title>
+  <meta property="og:title" content="Intercepted Traffic &#8212; Packet Capture #4471">
+  <meta property="og:description" content="Multiple encoded payloads detected in intercepted HTTPS session. Analyst review pending.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --purple: #b026ff;
+      --cyan: #00fff7;
+      --magenta: #ff2d95;
+      --acid-green: #39ff14;
+      --bg-dark: #050508;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--bg-dark);
+      color: #c8c8cc;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 15px;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px);
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { animation: none !important; transition: none !important; }
+    }
+
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 24px;
+      background: #0a0a0a;
+      border-bottom: 1px solid #222;
+      font-size: 13px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      position: sticky; top: 0; z-index: 100;
+    }
+    .nav-left { color: #666; }
+    .nav-center { color: var(--purple); }
+    .nav-right { color: #666; }
+
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 32px 20px 60px;
+    }
+
+    .intercept-header {
+      border: 1px solid var(--magenta);
+      background: #0c0810;
+      padding: 18px 24px;
+      margin-bottom: 28px;
+      text-align: center;
+    }
+    .intercept-header .title {
+      font-size: 22px;
+      color: var(--magenta);
+      letter-spacing: 3px;
+      margin-bottom: 6px;
+      font-weight: 700;
+    }
+    .intercept-header .subtitle {
+      font-size: 12px;
+      color: #777;
+      letter-spacing: 1px;
+    }
+
+    .meta-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+    @media (max-width: 700px) { .meta-grid { grid-template-columns: 1fr; } }
+
+    .meta-panel {
+      border: 1px solid #2a2a30;
+      background: #09090c;
+      padding: 16px 20px;
+    }
+    .meta-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 5px 0;
+      border-bottom: 1px solid #161618;
+      font-size: 13px;
+      font-family: 'Fira Code', monospace;
+    }
+    .meta-row:last-child { border-bottom: none; }
+    .meta-label { color: #666; }
+    .meta-value { color: var(--cyan); }
+    .meta-value.active { color: var(--acid-green); }
+
+    .http-block {
+      border: 1px solid #2a2a30;
+      background: #09090c;
+      margin-bottom: 24px;
+    }
+    .http-block-label {
+      display: inline-block;
+      background: #161620;
+      color: var(--purple);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 6px 16px;
+      border-bottom: 1px solid #2a2a30;
+      border-right: 1px solid #2a2a30;
+    }
+    .http-block-content {
+      background: #0a0a0c;
+      padding: 18px 20px;
+      overflow-x: auto;
+      font-family: 'Fira Code', monospace;
+      font-size: 13px;
+      line-height: 1.75;
+      white-space: pre;
+    }
+
+    .h-name { color: var(--cyan); }
+    .h-val { color: #aaa; }
+    .h-method { color: var(--magenta); font-weight: 600; }
+    .h-status { color: var(--acid-green); font-weight: 600; }
+
+    /* all encoded values look the same — no visual favoritism */
+    .h-val-encoded { color: #9a9aaa; }
+
+    .json-block {
+      border: 1px solid #2a2a30;
+      background: #09090c;
+      margin-bottom: 28px;
+    }
+    .json-block-label {
+      display: inline-block;
+      background: #161620;
+      color: #666;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 6px 16px;
+      border-bottom: 1px solid #2a2a30;
+      border-right: 1px solid #2a2a30;
+    }
+    .json-content {
+      background: #0a0a0c;
+      padding: 18px 20px;
+      overflow-x: auto;
+      font-family: 'Fira Code', monospace;
+      font-size: 13px;
+      line-height: 1.75;
+      white-space: pre;
+      color: #999;
+    }
+    .json-key { color: var(--cyan); }
+    .json-str { color: #aaa; }
+    .json-num { color: var(--magenta); }
+
+    .analyst-note {
+      border-left: 3px solid var(--purple);
+      padding: 16px 20px;
+      margin-bottom: 28px;
+      font-style: italic;
+      color: #888;
+      font-size: 14px;
+      line-height: 1.7;
+      background: #08060c;
+    }
+  </style>
+</head>
+<body>
+
+<!-- pcap export from IDS sensor THETA-7-NIDS, session 4471. Multiple encoded payloads. -->
+
+<nav class="nav">
+  <span class="nav-left">IDS::THETA-7-NIDS</span>
+  <span class="nav-center">INTERCEPTED</span>
+  <span class="nav-right">CAPTURE #4471</span>
+</nav>
+
+<div class="container">
+
+  <div class="intercept-header">
+    <div class="title">&#9888; INTERCEPTED TRAFFIC</div>
+    <div class="subtitle">Packet Capture #4471 &nbsp;|&nbsp; IDS Sensor: THETA-7-NIDS &nbsp;|&nbsp; Confidence: HIGH</div>
+  </div>
+
+  <div class="meta-grid">
+    <div class="meta-panel">
+      <div class="meta-row"><span class="meta-label">Source IP</span><span class="meta-value">10.7.41.2</span></div>
+      <div class="meta-row"><span class="meta-label">Source Port</span><span class="meta-value">49152</span></div>
+      <div class="meta-row"><span class="meta-label">Source MAC</span><span class="meta-value">02:42:ac:11:00:02</span></div>
+      <div class="meta-row"><span class="meta-label">Protocol</span><span class="meta-value">HTTPS (TLS 1.3)</span></div>
+    </div>
+    <div class="meta-panel">
+      <div class="meta-row"><span class="meta-label">Dest IP</span><span class="meta-value">10.7.41.100</span></div>
+      <div class="meta-row"><span class="meta-label">Dest Port</span><span class="meta-value">8443</span></div>
+      <div class="meta-row"><span class="meta-label">Dest MAC</span><span class="meta-value">02:42:ac:11:00:64</span></div>
+      <div class="meta-row"><span class="meta-label">Session Status</span><span class="meta-value active">ACTIVE</span></div>
+    </div>
+  </div>
+
+  <!-- REQUEST -->
+  <div class="http-block">
+    <div class="http-block-label">Request</div>
+    <div class="http-block-content"><span class="h-method">POST</span> <span class="h-val">/api/v3/entrain/execute HTTP/1.1</span>
+<span class="h-name">Host:</span> <span class="h-val">spiral-ctrl.site7.local:8443</span>
+<span class="h-name">User-Agent:</span> <span class="h-val">SpiralClient/3.1.7 (Linux; EEG-Bridge)</span>
+<span class="h-name">Accept:</span> <span class="h-val">application/json</span>
+<span class="h-name">Content-Type:</span> <span class="h-val">application/json; charset=utf-8</span>
+<span class="h-name">X-Request-ID:</span> <span class="h-val">7f3a9c2e-41d0-4b7a-b8f1-9e2d3c4a5b6d</span>
+<span class="h-name">X-Session-Nonce:</span> <span class="h-val-encoded">dGhpcyBpcyBub3QgdGhlIGNsdWUgeW91IHNlZWs=</span>
+<span class="h-name">X-Auth-Signature:</span> <span class="h-val-encoded">bm90IGV2ZXJ5IGVuY29kZWQgc3RyaW5nIGlzIGEgY2x1ZQ==</span>
+<span class="h-name">X-Experiment-ID:</span> <span class="h-val">PHASE3-20260228-THETA</span>
+<span class="h-name">Authorization:</span> <span class="h-val">Bearer eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiJkci5sdW1lbiJ9.fake</span>
+<span class="h-name">X-Spiral-Token:</span> <span class="h-val-encoded">VGhlIG5leHQgZnJlcXVlbmN5IGlzIDEzIHNoaWZ0cyBhd2F5LiBOYXZpZ2F0ZSB0byAvc3RhZ2U0Lmh0bWw=</span>
+<span class="h-name">X-Telemetry-Hash:</span> <span class="h-val-encoded">c3RpbGwgbm90IHRoZSBhbnN3ZXIga2VlcCBsb29raW5n</span>
+<span class="h-name">Cookie:</span> <span class="h-val">__session=<span class="h-val-encoded">aW52YWxpZCBjb29raWUgZGF0YQ==</span>; __spiral_sync=<span class="h-val-encoded">bm90aGluZyB0byBzZWUgaGVyZSBlaXRoZXI=</span></span>
+<span class="h-name">X-Trace-Context:</span> <span class="h-val-encoded">ZGVjb3kgdHJhY2UgZGF0YSAtLSBpZ25vcmU=</span>
+<span class="h-name">Content-Length:</span> <span class="h-val">247</span></div>
+  </div>
+
+  <!-- RESPONSE -->
+  <div class="http-block">
+    <div class="http-block-label">Response</div>
+    <div class="http-block-content"><span class="h-status">HTTP/1.1 200 OK</span>
+<span class="h-name">Server:</span> <span class="h-val">SpiralEngine/3.1.7</span>
+<span class="h-name">Content-Type:</span> <span class="h-val">application/json</span>
+<span class="h-name">X-Entrainment-Status:</span> <span class="h-val">ACTIVE</span>
+<span class="h-name">X-Subject-Count:</span> <span class="h-val">12</span>
+<span class="h-name">X-Theta-Lock:</span> <span class="h-val">CONFIRMED @ 7.83Hz</span>
+<span class="h-name">Set-Cookie:</span> <span class="h-val">__spiral_depth=<span class="h-val-encoded">bGV2ZWwgMyBjb21wbGV0ZSAtIGtlZXAgZ29pbmc=</span>; Path=/; Secure; HttpOnly</span>
+<span class="h-name">X-Debug-Trace:</span> <span class="h-val-encoded">Y29uZ3JhdHMgb24gZGVjb2RpbmcgdGhpcyBidXQgaXRzIGEgZGVjb3k=</span>
+<span class="h-name">X-Correlation-ID:</span> <span class="h-val-encoded">dGhpcyBvbmUgaXMgYWxzbyBhIGRlY295IHNvcnJ5</span></div>
+  </div>
+
+  <!-- REQUEST BODY -->
+  <div class="json-block">
+    <div class="json-block-label">Request Body</div>
+    <div class="json-content">{
+  <span class="json-key">"experiment_id"</span>: <span class="json-str">"PHASE3-20260228-THETA"</span>,
+  <span class="json-key">"action"</span>: <span class="json-str">"execute_entrainment"</span>,
+  <span class="json-key">"parameters"</span>: {
+    <span class="json-key">"frequency"</span>: <span class="json-num">7.83</span>,
+    <span class="json-key">"pulse_width_ms"</span>: <span class="json-num">40</span>,
+    <span class="json-key">"subject_ids"</span>: [<span class="json-num">1</span>, <span class="json-num">2</span>, <span class="json-num">3</span>, <span class="json-num">4</span>, <span class="json-num">5</span>, <span class="json-num">6</span>, <span class="json-num">7</span>, <span class="json-num">8</span>, <span class="json-num">9</span>, <span class="json-num">10</span>, <span class="json-num">11</span>, <span class="json-num">12</span>],
+    <span class="json-key">"duration_sec"</span>: <span class="json-num">1800</span>,
+    <span class="json-key">"sync_token"</span>: <span class="json-str">"dGhpcyB0b2tlbiBpcyBtZWFuaW5nbGVzcw=="</span>
+  }
+}</div>
+  </div>
+
+  <!-- RESPONSE BODY -->
+  <div class="json-block">
+    <div class="json-block-label">Response Body</div>
+    <div class="json-content">{
+  <span class="json-key">"status"</span>: <span class="json-str">"active"</span>,
+  <span class="json-key">"subjects_locked"</span>: <span class="json-num">12</span>,
+  <span class="json-key">"theta_frequency"</span>: <span class="json-num">7.83</span>,
+  <span class="json-key">"cognitive_bridge"</span>: <span class="json-str">"PHASE_3_NOMINAL"</span>,
+  <span class="json-key">"anomalies_detected"</span>: <span class="json-num">3</span>,
+  <span class="json-key">"spiral_harmonic"</span>: <span class="json-str">"0.3Hz — pattern matches previous sessions"</span>,
+  <span class="json-key">"timestamp"</span>: <span class="json-str">"2026-02-28T03:00:31Z"</span>
+}</div>
+  </div>
+
+  <div class="analyst-note">
+    Multiple encoded payloads detected across request and response headers, cookies, and body fields. At least 10 Base64-encoded values identified. Most appear to be standard session management and telemetry tokens, but this traffic pattern is unusual for internal API calls. Full decode and triage recommended.
+  </div>
+
+</div>
+
+</body>
+</html>

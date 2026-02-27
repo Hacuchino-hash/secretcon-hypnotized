@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="data:,">
+  <title>INTERCEPTED TRANSMISSION | DOC-SC4-2026-00731</title>
+  <meta property="og:title" content="Intercepted Transmission">
+  <meta property="og:description" content="Payload requires reassembly. Classification: RESTRICTED.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Share Tech Mono', monospace;
+      background: #050508;
+      color: #111;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px);
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    .nav {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 20px;
+      background: #0c0c10;
+      border-bottom: 1px solid #222;
+      font-size: 12px;
+      letter-spacing: 2px;
+      color: #888;
+    }
+    .nav-center { color: #b026ff; }
+
+    .card {
+      background: #faf8f2;
+      color: #111;
+      max-width: 680px;
+      width: 100%;
+      margin: 40px 16px 24px;
+      padding: 32px 36px 24px;
+      border: 1px solid #bbb;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.55);
+    }
+
+    .header {
+      text-align: center;
+      border: 2px solid #111;
+      padding: 8px 16px;
+      margin-bottom: 20px;
+    }
+    .header-title {
+      font-size: 16px;
+      letter-spacing: 4px;
+    }
+    .doc-id {
+      font-family: 'Fira Code', monospace;
+      font-size: 11px;
+      color: #555;
+      margin-top: 4px;
+      letter-spacing: 1px;
+    }
+
+    .section-label {
+      font-size: 10px;
+      letter-spacing: 3px;
+      color: #666;
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 3px;
+      margin-bottom: 8px;
+    }
+
+    .meta-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4px 24px;
+      font-family: 'Fira Code', monospace;
+      font-size: 11px;
+      margin-bottom: 20px;
+    }
+    .meta-grid .label { color: #666; letter-spacing: 1px; }
+    .meta-grid .value { color: #111; }
+
+    .packet-log {
+      font-family: 'Fira Code', monospace;
+      font-size: 10px;
+      line-height: 1.65;
+      background: #f4f2ec;
+      border: 1px solid #d5d2c8;
+      padding: 10px 12px;
+      margin-bottom: 20px;
+      overflow-x: auto;
+      white-space: pre;
+    }
+    .packet-log .exfil { font-weight: 600; }
+    .packet-log .noise { color: #777; }
+
+    .analyst-note {
+      border: 1px dashed #999;
+      padding: 10px 14px;
+      font-size: 11px;
+      font-style: italic;
+      line-height: 1.55;
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    .bottom-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 8px;
+      border-top: 2px solid #111;
+      padding-top: 8px;
+      font-size: 10px;
+      letter-spacing: 1px;
+    }
+    .bottom-bar .tagline {
+      font-size: 9px;
+      color: #666;
+      font-style: italic;
+    }
+    .bottom-bar .right { text-align: right; color: #444; }
+
+    .print-btn {
+      margin: 0 16px 32px;
+      padding: 8px 24px;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 12px;
+      letter-spacing: 2px;
+      background: transparent;
+      color: #666;
+      border: 1px solid #444;
+      cursor: pointer;
+    }
+    .print-btn:hover { color: #b026ff; border-color: #b026ff; }
+
+    @media print {
+      body { background: #fff; }
+      body::after { display: none; }
+      .nav, .print-btn { display: none; }
+      .card { margin: 0; box-shadow: none; border: 1px solid #000; max-width: 100%; background: #fff; }
+      .packet-log { background: #fff; border-color: #000; }
+    }
+
+    @media (max-width: 720px) {
+      .card { padding: 20px 16px 18px; }
+      .meta-grid { grid-template-columns: 1fr; }
+      .bottom-bar { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="nav">
+    <span>IDS::SENSOR-07</span>
+    <span class="nav-center">ENTRY POINT</span>
+    <span>CLASSIFIED</span>
+  </nav>
+
+  <main class="card">
+
+    <div class="header">
+      <div class="header-title">&#9670; INTERCEPTED TRANSMISSION &#9670;</div>
+      <div class="doc-id">DOC-SC4-2026-00731</div>
+    </div>
+
+    <div class="section-label">CAPTURE METADATA</div>
+    <div class="meta-grid">
+      <span class="label">SOURCE</span>        <span class="value">10.7.41.2:49152 (INTERNAL)</span>
+      <span class="label">DESTINATION</span>    <span class="value">198.51.100.7:443 (EXTERNAL)</span>
+      <span class="label">PROTOCOL</span>       <span class="value">TCP/TLS 1.3</span>
+      <span class="label">CAPTURE TIME</span>   <span class="value">2026.02.28 03:00:42 UTC</span>
+      <span class="label">SENSOR ID</span>      <span class="value">IDS-07</span>
+      <span class="label">CLASSIFICATION</span> <span class="value">RESTRICTED &mdash; SIGINT</span>
+    </div>
+
+    <div class="section-label">RAW PACKET LOG</div>
+    <div class="packet-log"><span>0001  03:00:42.110  SYN        10.7.41.2:49152 &gt; 198.51.100.7:443   seq=0</span>
+<span>0002  03:00:42.138  SYN-ACK    198.51.100.7:443 &gt; 10.7.41.2:49152   seq=0 ack=1</span>
+<span>0003  03:00:42.139  ACK        10.7.41.2:49152 &gt; 198.51.100.7:443   seq=1 ack=1</span>
+<span>0004  03:00:42.204  TLS        ClientHello      v1.3  cipher=TLS_AES_256_GCM_SHA384</span>
+<span>0005  03:00:42.287  TLS        ServerHello      v1.3  key_share=x25519</span>
+<span>0006  03:00:42.315  TLS        ChangeCipherSpec  &gt;&gt; encrypted handshake</span>
+<span>0007  03:00:42.401  DATA       len=512  flags=PSH,ACK  [encrypted]</span>
+<span class="noise">0008  03:00:42.433  DATA       len=128  flags=ACK      [keepalive]</span>
+<span>0009  03:00:42.455  DATA       len=1024 flags=PSH,ACK  [encrypted]</span>
+<span class="exfil">0010  03:00:42.517  [EXFIL_DATA] seq=01 | 68747470733a2f2f</span>
+<span class="exfil">0011  03:00:42.518  [EXFIL_DATA] seq=02 | 686163756368696e</span>
+<span class="noise">0012  03:00:42.518  DATA       len=64   flags=ACK      [window update]</span>
+<span class="exfil">0013  03:00:42.519  [EXFIL_DATA] seq=03 | 6f2d686173682e67</span>
+<span class="exfil">0014  03:00:42.520  [EXFIL_DATA] seq=04 | 69746875622e696f</span>
+<span class="exfil">0015  03:00:42.521  [EXFIL_DATA] seq=05 | 2f73656372657463</span>
+<span class="noise">0016  03:00:42.521  DATA       len=64   flags=ACK      [dup ack]</span>
+<span class="exfil">0017  03:00:42.522  [EXFIL_DATA] seq=06 | 6f6e2d6879706e6f</span>
+<span class="exfil">0018  03:00:42.523  [EXFIL_DATA] seq=07 | 74697a65642f</span>
+<span>0019  03:00:42.600  DATA       len=256  flags=ACK      [encrypted]</span>
+<span class="noise">0020  03:00:42.688  DATA       len=32   flags=ACK      [keepalive]</span>
+<span>0021  03:00:42.780  FIN-ACK    10.7.41.2:49152 &gt; 198.51.100.7:443   seq=4097</span></div>
+
+    <div class="analyst-note">
+      <strong>ANALYST NOTE:</strong> Anomalous payload structure detected across 7 sequential
+      packets (lines 0010&ndash;0018, excluding interleaved ACKs). Payload encoding consistent
+      with hex-encoded ASCII. Recommend reassembly in sequence order and further analysis.
+    </div>
+
+    <div class="bottom-bar">
+      <div>
+        PROJECT SPIRAL : HYPNOTIZED
+        <div class="tagline">Follow the spiral</div>
+      </div>
+      <div class="right">Classification: RESTRICTED &mdash; SIGINT</div>
+    </div>
+
+  </main>
+
+  <button class="print-btn" onclick="window.print()">PRINT DOCUMENT</button>
+
+</body>
+</html>
