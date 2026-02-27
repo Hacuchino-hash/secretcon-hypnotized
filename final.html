@@ -202,6 +202,42 @@
   }
   .return-link a:hover { opacity: 0.8; color: var(--purple); }
 
+  /* locked state */
+  .locked {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    background: var(--bg-dark);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 32px;
+  }
+  .locked h1 {
+    font-family: 'Creepster', cursive;
+    color: var(--magenta);
+    font-size: clamp(2rem, 6vw, 3.5rem);
+    margin-bottom: 24px;
+  }
+  .locked p {
+    color: #666;
+    font-size: 14px;
+    line-height: 1.8;
+    max-width: 500px;
+  }
+  .locked a {
+    color: var(--purple);
+    text-decoration: none;
+    margin-top: 32px;
+    border: 1px solid var(--purple);
+    padding: 10px 32px;
+    letter-spacing: 2px;
+    font-size: 13px;
+  }
+  .locked a:hover { background: var(--purple); color: var(--bg-dark); }
+
   @media (prefers-reduced-motion: reduce) {
     .glitch-overlay { animation: none; opacity: 0; }
     .bg-spiral { animation: none; opacity: 0.15; }
@@ -228,6 +264,14 @@
 
     St. Paul, MN — June 4-5, 2026
 -->
+
+<div class="locked" id="lockedGate">
+  <h1>NICE TRY</h1>
+  <p>You can't skip to the end, Agent.<br><br>
+  The spiral must be followed in order.<br>
+  Each stage leaves a trace. You're missing some.</p>
+  <a href="index.html">START FROM THE BEGINNING</a>
+</div>
 
 <nav class="nav">
   <span class="nav-left">SIGNAL::DECODED</span>
@@ -268,6 +312,30 @@
 
   <div class="return-link reveal"><a href="index.html">[ return to the spiral ]</a></div>
 </main>
+
+<script>
+// check if they actually did the work
+(function() {
+  var ok = true;
+  try {
+    if (!localStorage.getItem('sp_1')) ok = false;
+    if (!localStorage.getItem('sp_2')) ok = false;
+    if (!localStorage.getItem('sp_3')) ok = false;
+    if (!localStorage.getItem('sp_4')) ok = false;
+  } catch(e) { ok = false; }
+
+  var gate = document.getElementById('lockedGate');
+  if (ok) {
+    gate.parentNode.removeChild(gate);
+  } else {
+    // hide everything behind the gate
+    document.querySelector('.content').style.display = 'none';
+    document.querySelector('.glitch-overlay').style.display = 'none';
+    document.querySelector('.bg-spiral').style.display = 'none';
+    document.getElementById('particles').style.display = 'none';
+  }
+})();
+</script>
 
 <script>
 (function() {
